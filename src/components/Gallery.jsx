@@ -1,41 +1,65 @@
-import React, { useState } from 'react';
-import TourCard from './TourCard'; // Assuming you have a TourCard component
+import React, { useEffect, useState } from 'react';
+import TourCard from './TourCard';
 
-const Gallery = () => {
-    const tours = [
-        { id: 1, destination: 'Paris', description: 'The city of lights.' },
-        { id: 2, destination: 'Tokyo', description: 'Experience the vibrant culture.' },
-        { id: 3, destination: 'New York', description: 'The city that never sleeps.' },
-    ];
+const Gallery = ({ tours, setTours, onRemove }) => {
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+    const [selectedDestination, setSelectedDestination] = useState('All');
 
-    const [selectedDestination, setSelectedDestination] = useState('');
-
-    const handleSelectChange = (event) => {
-        setSelectedDestination(event.target.value);
+    const fetchTours = async () => {
+        try {
+            const res = await fetch('https://course-api.com/react-tours-project');
+            const data = await res.json();
+            setTours(data);
+            setLoading(false);
+        } catch (err) {
+            setError(true);
+            setLoading(false);
+        }
     };
 
-    const filteredTours = selectedDestination
-        ? tours.filter((tour) => tour.destination === selectedDestination)
-        : tours;
+    useEffect(() => {
+        fetchTours();
+    }, []);
+
+    const handleDestinationChange = (e) => {
+        setSelectedDestination(e.target.value);
+    };
+
+    const uniqueDestinations = ['All', ...new Set(tours.map((tour) => tour.destination))];
+
+    const filteredTours =
+        selectedDestination === 'All'
+            ? tours
+            : tours.filter((tour) => tour.destination === selectedDestination);
+
+    if (loading) return <h2>Loading...</h2>;
+    if (error) return <h2>Something went wrong. Please try again later.</h2>;
+    if (tours.length === 0)
+        return (
+            <div>
+                <h2>No Tours Left</h2>
+                <button onClick={fetchTours}>Refresh</button>
+            </div>
+        );
 
     return (
-        <div>
-            <h1>Tour Gallery</h1>
-            <label htmlFor="destination-select">Choose a destination: </label>
-            <select id="destination-select" onChange={handleSelectChange}>
-                <option value="">All Destinations</option>
-                {tours.map((tour) => (
-                    <option key={tour.id} value={tour.destination}>
-                        {tour.destination}
-                    </option>
-                ))}
-            </select>
-            <div className="tour-list">
-                {filteredTours.map((tour) => (
-                    <TourCard key={tour.id} destination={tour.destination} description={tour.description} />
-                ))}
+        <section className="gallery">
+            <div className="filter">
+                <label htmlFor="destination">Filter by Destination: </label>
+                <select id="destination" value={selectedDestination} onChange={handleDestinationChange}>
+                    {uniqueDestinations.map((destination) => (
+                        <option key={destination} value={destination}>
+                            {destination}
+                        </option>
+                    ))}
+                </select>
+                <button onClick={() => setSelectedDestination('All')}>Reset Filter</button>
             </div>
-        </div>
+            {filteredTours.map((tour) => (
+                <TourCard key={tour.id} {...tour} onRemove={onRemove} />
+            ))}
+        </section>
     );
 };
 
