@@ -20,6 +20,14 @@ const TourCard = ({ id, image, info, price, name, onRemove }) => {
         <button className="btn" onClick={() => onRemove(id)}>
           Not Interested
         </button>
+        {!id && (
+            <div className="no-tours">
+                <p>No Tours Rendered. Refresh to load</p>
+                <button className="btn" onClick={() => window.location.reload()}>
+                    Refresh
+                </button>
+            </div>
+        )}
       </footer>
     </article>
   );
