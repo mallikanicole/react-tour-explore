@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const TourCard = ({ id, image, info, price, name, onRemove }) => {
   const [readMore, setReadMore] = useState(false);
-
+//render tour cards
   return (
     <article className="tour-card">
       <img src={image} alt={name} />
@@ -27,10 +27,11 @@ const TourCard = ({ id, image, info, price, name, onRemove }) => {
                     Refresh
                 </button>
             </div>
-        )}
+        )} 
       </footer>
     </article>
-  );
-};
+  );//add not interested button to remove tour card from gallery.
+
+};//add refresh button to reload data
 
 export default TourCard;

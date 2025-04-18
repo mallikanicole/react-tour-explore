@@ -6,10 +6,10 @@ const DestinySelector = ({ tours, onDestinationChange }) => {
     const handleChange = (event) => {
         const destination = event.target.value;
         setSelectedDestination(destination);
-        onDestinationChange(destination); // Pass the selected destination up to App.jsx
+        onDestinationChange(destination);
     };
 
-    // Extract unique tour names
+    //create dropdown menue for tour destinations
     const uniqueTours = [...new Set(tours.map((tour) => tour.name))];
 
     return (
