@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import Gallery from './component/Gallery'; 
 
 const App = () => {
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+//fetch tours from API
   const fetchTours = async () => {
     setLoading(true);
     setError(null); // Reset error state before fetching
@@ -21,11 +22,11 @@ const App = () => {
       setLoading(false);
     }
   };
-
+//use useEffect to fetch tours
   useEffect(() => {
     fetchTours();
   }, []);
-
+//handle loading and error states
   if (loading) {
     return <h2>Loading...</h2>;
   }
